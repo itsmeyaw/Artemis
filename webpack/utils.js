@@ -12,7 +12,12 @@ module.exports = {
 function parseVersion() {
     const versionRegex = /^version\s*=\s*[',"]([^',"]*)[',"]/gm; // Match and group the version number
     const buildGradle = fs.readFileSync('build.gradle', 'utf8');
-    return versionRegex.exec(buildGradle)[1];
+    const versionResultArray = versionRegex.exec(buildGradle);
+    if (versionResultArray && versionResultArray.length > 0) {
+        return versionResultArray[1];
+    } else {
+        return 'unspecified';
+    }
 }
 
 const _root = path.resolve(__dirname, '..');
