@@ -410,7 +410,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
                 const title = response.body ?? segment;
                 this.setBreadcrumb(uri, title, false, index);
             },
-            (error: HttpErrorResponse) => onError(this.jhiAlertService, error, false),
+            (error: HttpErrorResponse) => onError(this.jhiAlertService, error),
         );
     }
 
