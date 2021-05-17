@@ -12,6 +12,7 @@ import { EditorMode } from 'app/shared/markdown-editor/markdown-editor.component
 import { KatexCommand } from 'app/shared/markdown-editor/commands/katex.command';
 import { navigateBackFromExerciseUpdate } from 'app/utils/navigation.utils';
 import { ExerciseCategory } from 'app/entities/exercise-category.model';
+import { onError } from 'app/shared/util/global.utils';
 
 @Component({
     selector: 'jhi-file-upload-exercise-update',
@@ -61,7 +62,7 @@ export class FileUploadExerciseUpdateComponent implements OnInit {
                     (categoryRes: HttpResponse<string[]>) => {
                         this.existingCategories = this.exerciseService.convertExerciseCategoriesAsStringFromServer(categoryRes.body!);
                     },
-                    (categoryRes: HttpErrorResponse) => this.onError(categoryRes),
+                    (categoryRes: HttpErrorResponse) => onError(this.jhiAlertService, categoryRes),
                 );
             }
         });
@@ -124,9 +125,6 @@ export class FileUploadExerciseUpdateComponent implements OnInit {
         this.isSaving = false;
     }
 
-    private onError(error: HttpErrorResponse) {
-        this.jhiAlertService.error(error.message);
-    }
     /**
      * gets the flag of the structured grading instructions slide toggle
      */

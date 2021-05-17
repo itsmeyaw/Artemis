@@ -8,6 +8,7 @@ import { FileUploadExercise } from 'app/entities/file-upload-exercise.model';
 import { FileUploadExerciseService } from './file-upload-exercise.service';
 import { filter } from 'rxjs/operators';
 import { JhiAlertService } from 'ng-jhipster';
+import { onError } from 'app/shared/util/global.utils';
 
 @Component({
     selector: 'jhi-file-upload-exercise-detail',
@@ -51,7 +52,7 @@ export class FileUploadExerciseDetailComponent implements OnInit, OnDestroy {
                     this.fileUploadExercise = fileUploadExerciseResponse.body!;
                     this.isExamExercise = this.fileUploadExercise.exerciseGroup !== undefined;
                 },
-                (res: HttpErrorResponse) => this.onError(res),
+                (res: HttpErrorResponse) => onError(this.jhiAlertService, res),
             );
     }
 
@@ -68,9 +69,5 @@ export class FileUploadExerciseDetailComponent implements OnInit, OnDestroy {
      */
     registerChangeInFileUploadExercises() {
         this.eventSubscriber = this.eventManager.subscribe('fileUploadExerciseListModification', () => this.load(this.fileUploadExercise.id!));
-    }
-
-    private onError(error: HttpErrorResponse) {
-        this.jhiAlertService.error(error.message);
     }
 }

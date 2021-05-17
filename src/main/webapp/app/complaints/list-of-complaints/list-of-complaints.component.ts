@@ -3,7 +3,7 @@ import { Location } from '@angular/common';
 import { JhiAlertService } from 'ng-jhipster';
 import { ComplaintService } from 'app/complaints/complaint.service';
 import { Complaint, ComplaintType } from 'app/entities/complaint.model';
-import { HttpResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ExerciseType } from 'app/entities/exercise.model';
@@ -13,6 +13,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SortService } from 'app/shared/service/sort.service';
 import { ArtemisDatePipe } from 'app/shared/pipes/artemis-date.pipe';
 import { TranslateService } from '@ngx-translate/core';
+import { onError } from 'app/shared/util/global.utils';
 
 @Component({
     // TODO this selector is used twice which is not good!!!
@@ -95,7 +96,7 @@ export class ListOfComplaintsComponent implements OnInit {
                     this.hasStudentInformation = true;
                 }
             },
-            () => this.onError(),
+            (error: HttpErrorResponse) => onError(this.jhiAlertService, error),
             () => (this.loading = false),
         );
     }
@@ -127,10 +128,6 @@ export class ListOfComplaintsComponent implements OnInit {
                 this.router.navigate(urlProgramming, { queryParams: { 'correction-round': this.correctionRound } });
                 return;
         }
-    }
-
-    private onError() {
-        this.jhiAlertService.error('error.http.400');
     }
 
     sortRows() {

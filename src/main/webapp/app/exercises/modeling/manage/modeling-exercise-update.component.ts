@@ -16,6 +16,7 @@ import { switchMap, tap } from 'rxjs/operators';
 import { ExerciseGroupService } from 'app/exam/manage/exercise-groups/exercise-group.service';
 import { navigateBackFromExerciseUpdate } from 'app/utils/navigation.utils';
 import { ExerciseCategory } from 'app/entities/exercise-category.model';
+import { onError } from 'app/shared/util/global.utils';
 
 @Component({
     selector: 'jhi-modeling-exercise-update',
@@ -88,14 +89,14 @@ export class ModelingExerciseUpdateComponent implements OnInit {
                                 (categoryRes: HttpResponse<string[]>) => {
                                     this.existingCategories = this.exerciseService.convertExerciseCategoriesAsStringFromServer(categoryRes.body!);
                                 },
-                                (categoryRes: HttpErrorResponse) => this.onError(categoryRes),
+                                (categoryRes: HttpErrorResponse) => onError(this.jhiAlertService, categoryRes),
                             );
                         } else {
                             this.courseService.findAllCategoriesOfCourse(this.modelingExercise.exerciseGroup!.exam!.course!.id!).subscribe(
                                 (categoryRes: HttpResponse<string[]>) => {
                                     this.existingCategories = this.exerciseService.convertExerciseCategoriesAsStringFromServer(categoryRes.body!);
                                 },
-                                (categoryRes: HttpErrorResponse) => this.onError(categoryRes),
+                                (categoryRes: HttpErrorResponse) => onError(this.jhiAlertService, categoryRes),
                             );
                         }
                     } else {
@@ -182,7 +183,7 @@ export class ModelingExerciseUpdateComponent implements OnInit {
                 this.modelingExercise.exampleSubmissions!.splice(index, 1);
             },
             (error: HttpErrorResponse) => {
-                this.jhiAlertService.error(error.message);
+                onError(this.jhiAlertService, error);
             },
         );
     }
@@ -212,10 +213,6 @@ export class ModelingExerciseUpdateComponent implements OnInit {
 
     private onSaveError(): void {
         this.isSaving = false;
-    }
-
-    private onError(error: HttpErrorResponse): void {
-        this.jhiAlertService.error(error.message);
     }
 
     /**

@@ -22,6 +22,7 @@ import { ProgrammingLanguageFeatureService } from 'app/exercises/programming/sha
 import { navigateBackFromExerciseUpdate } from 'app/utils/navigation.utils';
 import { shortNamePattern } from 'app/shared/constants/input.constants';
 import { ExerciseCategory } from 'app/entities/exercise-category.model';
+import { onError } from 'app/shared/util/global.utils';
 
 @Component({
     selector: 'jhi-programming-exercise-update',
@@ -213,7 +214,7 @@ export class ProgrammingExerciseUpdateComponent implements OnInit {
                                     (categoryRes: HttpResponse<string[]>) => {
                                         this.existingCategories = this.exerciseService.convertExerciseCategoriesAsStringFromServer(categoryRes.body!);
                                     },
-                                    (categoryRes: HttpErrorResponse) => this.onError(categoryRes),
+                                    (categoryRes: HttpErrorResponse) => onError(this.jhiAlertService, categoryRes),
                                 );
                             });
                         }
@@ -359,10 +360,6 @@ export class ProgrammingExerciseUpdateComponent implements OnInit {
         jhiAlert.msg = errorMessage;
         this.isSaving = false;
         window.scrollTo(0, 0);
-    }
-
-    private onError(error: HttpErrorResponse) {
-        this.jhiAlertService.error(error.message);
     }
 
     /**

@@ -29,6 +29,7 @@ import { Authority } from 'app/shared/constants/authority.constants';
 import { getLatestSubmissionResult, getSubmissionResultById } from 'app/entities/submission.model';
 import { getExerciseDashboardLink, getLinkToSubmissionAssessment } from 'app/utils/navigation.utils';
 import { SubmissionService } from 'app/exercises/shared/submission/submission.service';
+import { onError } from 'app/shared/util/global.utils';
 
 @Component({
     providers: [FileUploadAssessmentsService],
@@ -180,7 +181,7 @@ export class FileUploadAssessmentComponent implements OnInit, OnDestroy {
                     if (error.error && error.error.errorKey === 'lockedSubmissionsLimitReached') {
                         this.navigateBack();
                     } else {
-                        this.onError('');
+                        onError(this.jhiAlertService, error);
                     }
                 },
             );
@@ -272,7 +273,7 @@ export class FileUploadAssessmentComponent implements OnInit, OnDestroy {
                     this.hasNewSubmissions = false;
                 } else {
                     this.isLoading = false;
-                    this.onError(error.message);
+                    onError(this.jhiAlertService, error);
                 }
             },
         );
@@ -350,7 +351,7 @@ export class FileUploadAssessmentComponent implements OnInit, OnDestroy {
                 this.complaint = res.body;
             },
             (err: HttpErrorResponse) => {
-                this.onError(err.message);
+                onError(this.jhiAlertService, err);
             },
         );
     }
